@@ -3,6 +3,12 @@ const htmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   mode: 'development',
   entry: './src/index.jsx',
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@src': path.join(__dirname, '../'),
+    }
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js'
@@ -28,6 +34,20 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10240,
+              esModule: false,
+              name: 'assets/[name].[ext]'
+            }
+          }
+        ],
+        exclude: /node_modules/
       }
     ]
   },
@@ -35,6 +55,9 @@ module.exports = {
     new htmlWebpackPlugin({
       template: path.join(__dirname, './public/index.html'),
       filename: 'index.html'
+    }),
+    new webpack.ProvidePlugin({
+      "React": "react"
     })
   ]
 }
